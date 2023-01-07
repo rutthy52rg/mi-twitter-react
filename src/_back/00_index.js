@@ -7,7 +7,6 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { setAuthorizationHeader } from "./api/client";
 import App from "./App";
-import { AuthProvider } from "./components/auth/context";
 import "./index.css";
 import storage from "./util/localStorage";
 
@@ -19,9 +18,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <React.StrictMode>
-      <AuthProvider isInitallyLogged={!!accessToken}>
-        <App />
-      </AuthProvider>
+    {/* Pasamos prop isInitallyLogged is hay token a APP.js */}
+    <App isInitallyLogged={!!accessToken} />
     </React.StrictMode>
   </BrowserRouter>
 );
