@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../commons/Button";
 import Checkbox from "../commons/CheckBox";
 import FormField from "../commons/FormField";
 import InputFile from "../commons/InputFile";
 import Select from "../commons/Select";
-import { useAuth } from "./context";
+// import { useAuth } from "./context";
+import { authLogin } from "../../store/actions";
 import { login } from "./service";
 
 const LoginPage = ({ ...props }) => {
@@ -15,7 +17,10 @@ const LoginPage = ({ ...props }) => {
   const [selectedTransport, setSelectedTransport] = useState("");
   const [error, setError] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
-  const { handleLogin: onLogin } = useAuth();
+
+  /*(2)*/ const dispatch = useDispatch();
+  // (2) change by useDispath --onLogin const { handleLogin: onLogin } = useAuth();
+
   //location de loginpage que al pasar por la url de navigate desde requireAuth la propiedad state con el pathname desde donde hemos accedido a login
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,10 +51,10 @@ const LoginPage = ({ ...props }) => {
       resetError();
       setIsFetching(true);
       await login({ username, password });
-      onLogin();
-      //si location tiene state y si tiene from se envia a pathname si no se envia a home
+      /*(2)*/ dispatch(authLogin());
+      //(2)change by useDispatch =>  //onLogin();
+
       const to = location.state?.from?.pathname || "/";
-      //replace se usa para eleminar la ultima url accedida, esto es si vengo de login no vuelvo a login otra vez (ultima url (login) elininada, se iria a la anterior)
       navigate(to, { replace: true });
     } catch (error) {
       setError(error);

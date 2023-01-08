@@ -1,15 +1,22 @@
 import classNames from "classnames";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 import { ReactComponent as Icon } from "../../assets/twitter.svg";
-import { useAuth } from "../auth/context";
+import { authLogout } from "../../store/actions";
+import { getIsLogged } from "../../store/selectors";
 import { logout } from "../auth/service";
 import Button from "../commons/Button";
 
 const Header = () => {
-  const { isLogged, handleLogout: onLogout } = useAuth();
+  /*(1)*/ const isLogged = useSelector(getIsLogged);
+
+  const dispatch = useDispatch();
+  // (2)change by useDispatch --onLogout  const { handleLogout: onLogout } = useAuth();
+
   const handleLogout = () => {
     logout();
-    onLogout();
+    dispatch(authLogout());
+    // (2)change by useDispatch => //onLogout();
   };
   return (
     <header>
