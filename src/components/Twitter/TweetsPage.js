@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { tweetsLoaded } from "../../store/actions";
+import { getTweets } from "../../store/selectors";
 import Button from "../commons/Button";
 import PageContainerOutlet from "../Layout/PageContainerOutlet";
 import { getLatestTweets } from "./service";
 import Tweet from "./Tweet";
 import styles from "./TweetsPage.module.css";
 
-console.log(styles);
-//plantilla a renderizar
 const EmptyList = () => (
   <div>
     <p> No hay ningún tweet. Crea el primero</p>
@@ -17,29 +18,17 @@ const EmptyList = () => (
   </div>
 );
 
-export const TweetsPage = ({ ...props }) => {
-  const [tweets, setTweets] = useState([]);
+export const TweetsPage = ({ onTweetsLoaded, tweets, ...props }) => {
+  // const [tweets, setTweets] = useState([]);
 
   useEffect(() => {
-    // const excuteAsync = async () => {
-    //   tweets = await getLatestTweets();
-    //   setTweets(tweets);
-    // };
-    // excuteAsync();
-
     getLatestTweets()
       .then((tweets) => {
-        setTweets(tweets);
-        // setTweets([]);
+        // setTweets(tweets);
+        onTweetsLoaded(tweets);
       })
       .catch((error) => console.log(error));
-
-    // getLatestTweets().then((tweets) => {
-    //   console.log(tweets);
-    //interceptus desde api/client, si no sería tweets.data
-    //   setTweets(tweets);
-    // });
-  }, []);
+  }, [onTweetsLoaded]);
 
   return (
     <PageContainerOutlet title="Listado tweets" {...props}>
@@ -61,4 +50,18 @@ export const TweetsPage = ({ ...props }) => {
     </PageContainerOutlet>
   );
 };
-export default TweetsPage;
+
+const mapStateToProps = (state, ownProps) => ({
+  // tweets: state.tweets,
+  tweets: getTweets(state),
+});
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onTweetsLoaded: (tweets) => dispatch(tweetsLoaded(tweets)),
+});
+
+const connectedTweetsPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TweetsPage);
+// export default TweetsPage;
+export default connectedTweetsPage;

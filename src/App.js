@@ -15,7 +15,7 @@ function App() {
           <Route path="/" element={<Navigate to="/tweets" />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/tweets" element={<Layout />}>
-            <Route path="" element={<TweetsPage />} index />
+            <Route path="" element={<TweetsPage color="red" />} index />
             <Route path=":id" element={<TweetDetailPage />} />
             <Route
               path="new"

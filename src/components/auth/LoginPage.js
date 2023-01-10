@@ -1,27 +1,19 @@
 import { useMemo, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { authLogin, uiResetError } from "../../store/actions";
+import { getUi } from "../../store/selectors";
 import Button from "../commons/Button";
-import Checkbox from "../commons/CheckBox";
 import FormField from "../commons/FormField";
-import InputFile from "../commons/InputFile";
-import Select from "../commons/Select";
-// import { useAuth } from "./context";
-import { authLogin } from "../../store/actions";
-import { login } from "./service";
 
 const LoginPage = ({ ...props }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [savesession, setSaveSession] = useState(false);
-  const [selectedTransport, setSelectedTransport] = useState("");
-  const [error, setError] = useState(null);
-  const [isFetching, setIsFetching] = useState(false);
+  // (4) const [error, setError] = useState(null);
+  // (2) const [isFetching, setIsFetching] = useState(false);
+  const { /*(2)*/ isLoadding, /*(4)*/ error } = useSelector(getUi);
 
-  /*(2)*/ const dispatch = useDispatch();
-  // (2) change by useDispath --onLogin const { handleLogin: onLogin } = useAuth();
-
-  //location de loginpage que al pasar por la url de navigate desde requireAuth la propiedad state con el pathname desde donde hemos accedido a login
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -34,40 +26,25 @@ const LoginPage = ({ ...props }) => {
     // console.log("datos", password);
     setPassword(e.target.value);
   };
-  const handleChangeSaveSession = (e) => {
-    setSaveSession(e.target.checked);
-  };
-  const handleChangeTransport = (e) => {
-    setSelectedTransport(e.target.value);
-  };
-  const resetError = () => {
-    setError(null);
-    setIsFetching(false);
+
+  const resetErrorHandle = () => {
+    dispatch(uiResetError());
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      resetError();
-      setIsFetching(true);
-      await login({ username, password });
-      /*(2)*/ dispatch(authLogin());
-      //(2)change by useDispatch =>  //onLogin();
 
-      const to = location.state?.from?.pathname || "/";
-      navigate(to, { replace: true });
-    } catch (error) {
-      setError(error);
-    }
-
-    //TODO guardar token en localstorage
+    dispatch(
+      authLogin({ username, password })).then(() => {
+        const to = location.state?.from?.pathname || "/";
+        navigate(to, { replace: true });
+      }
+    );
   };
 
-  const arrOpt = ["moto", "coche", "camion"];
   const isDisabled = useMemo(() => {
-    // console.log("enviando", isFetching);
-    return !(username && password && !isFetching);
-  }, [username, password, isFetching]);
+    return !(username && password && !isLoadding);
+  }, [username, password, isLoadding]);
 
   return (
     <div className="container mt-5">
@@ -93,21 +70,7 @@ const LoginPage = ({ ...props }) => {
               onChange={handleChangeUsePassword}
               value={password}
             />
-            <Checkbox
-              tag="Guardar sesión"
-              onChange={handleChangeSaveSession}
-              value={savesession}
-            />
-            <InputFile
-              label="inserta foto"
-              onChange={(e) => console.log(e.target.files)}
-            />
-            <Select
-              value={selectedTransport}
-              label="selecciona transporte"
-              options={arrOpt}
-              onChange={handleChangeTransport}
-            />
+
             <Button type="submit" value="Enviar" disabled={isDisabled}>
               Log in
             </Button>
@@ -115,7 +78,7 @@ const LoginPage = ({ ...props }) => {
         </div>
       </div>
       {error ? (
-        <div className="row mt-5" onClick={resetError}>
+        <div className="row mt-5" onClick={/*(6)*/ resetErrorHandle}>
           <div className="col">
             <div className="alert alert-danger" role="alert">
               {error.message}
