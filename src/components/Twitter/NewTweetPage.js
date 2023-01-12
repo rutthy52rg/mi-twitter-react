@@ -1,13 +1,15 @@
 import T, { string } from "prop-types";
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { tweetCreated } from "../../store/actions";
 import Button from "../commons/Button";
 import TextArea from "../commons/TextArea";
 import PageContainerOutlet from "../Layout/PageContainerOutlet";
-import { createTweet } from "./service";
 
 const MAX_CHARACTERS = 200;
 const NewTweetPage = () => {
+  const dispatch = useDispatch();
   const [content, setContent] = useState("");
   const handleChange = (e) => setContent(e.target.value);
   const buttonEnabled = content.length >= 5;
@@ -19,7 +21,8 @@ const NewTweetPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const tweet = await createTweet({ content });
+      const tweet = await dispatch(tweetCreated({ content }));
+      // const tweet = await createTweet({ content });
       navigate(`/tweets/${tweet.id}`);
     } catch (error) {
       if (error.status === 401) {

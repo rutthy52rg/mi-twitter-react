@@ -7,6 +7,9 @@ import {
   TWEETS_LOADED_FAILURE,
   TWEETS_LOADED_REQUEST,
   TWEETS_LOADED_SUCCESS,
+  TWEET_CREATED_FAILURE,
+  TWEET_CREATED_REQUEST,
+  TWEET_CREATED_SUCCESS,
   TWEET_LOADED_FAILURE,
   TWEET_LOADED_REQUEST,
   TWEET_LOADED_SUCCESS,
@@ -38,10 +41,16 @@ export const authLogin = (credentials) => {
     }
   };
 };
-export const authLogout = () => ({
+export const authLogoutSuccess = () => ({
   type: AUTH_LOGOUT,
 });
 
+export const authLogout = () => {
+  return async function (dispatch, getState, { api }) {
+    await api.auth.authLogout;
+    dispatch(authLogoutSuccess());
+  };
+};
 export const tweetsLoadedRequest = () => ({
   type: TWEETS_LOADED_REQUEST,
 });
@@ -55,6 +64,7 @@ export const tweetsLoadedFailure = (error) => ({
   error: true,
 });
 
+// thuk
 export const tweetsLoad = () => {
   return async function (dispatch, getState, { api }) {
     const areLoaded = areTweetsLoaded(getState());
@@ -85,6 +95,7 @@ export const tweetLoadedFailure = (error) => ({
   error: true,
 });
 
+// thuk
 export const tweetLoad = (tweetId) => {
   return async function (dispatch, getState, { api }) {
     const isLoaded = getTweetDetail(tweetId)(getState());
@@ -101,10 +112,35 @@ export const tweetLoad = (tweetId) => {
     }
   };
 };
-// export const tweetsLoaded = (tweets) => ({
-//   type: TWEETS_LOADED,
-//   payload: tweets,
-// });
+
+export const tweetCreatedRequest = () => ({
+  type: TWEET_CREATED_REQUEST,
+});
+export const tweetCreatedSuccess = (tweet) => ({
+  type: TWEET_CREATED_SUCCESS,
+  payload: tweet,
+});
+export const tweetCreatedFailure = (error) => ({
+  type: TWEET_CREATED_FAILURE,
+  payload: error,
+  error: true,
+});
+// thuk
+export const tweetCreated = (tweet) => {
+  return async function (dispatch, getState, { api }) {
+    try {
+      dispatch(tweetCreatedRequest());
+      // const createTweet = await api.tweets.createTweet(tweet);
+      const { id } = await api.tweets.createTweet(tweet);
+      const createdTweet = await api.tweets.getTweet(id);
+      dispatch(tweetCreatedSuccess(createdTweet));
+      return createdTweet;
+    } catch (error) {
+      dispatch(tweetCreatedFailure(error));
+      throw error;
+    }
+  };
+};
 
 export const uiResetError = () => ({
   type: UI_RESET_ERROR,

@@ -45,6 +45,9 @@ export function tweets(state = stateDefault.tweets, action) {
   if (action.type === TWEET_LOADED_SUCCESS) {
     return { ...state, data: [action.payload] };
   }
+  if (action.type === TWEET_LOADED_SUCCESS) {
+    return { ...state, data: [action.payload, ...state.data] }; // añadimos el último a la data que ya hay => ponemos el primero el nuevo para que se guarde antes que los existentes ya
+  }
   return state;
 }
 

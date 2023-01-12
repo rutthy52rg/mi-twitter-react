@@ -4,7 +4,6 @@ import { Link, NavLink } from "react-router-dom";
 import { ReactComponent as Icon } from "../../assets/twitter.svg";
 import { authLogout } from "../../store/actions";
 import { getIsLogged } from "../../store/selectors";
-import { logout } from "../auth/service";
 import Button from "../commons/Button";
 
 const Header = () => {
@@ -14,7 +13,6 @@ const Header = () => {
   // (2)change by useDispatch --onLogout  const { handleLogout: onLogout } = useAuth();
 
   const handleLogout = () => {
-    logout();
     dispatch(authLogout());
     // (2)change by useDispatch => //onLogout();
   };
