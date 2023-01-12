@@ -7,15 +7,11 @@ import { getIsLogged } from "../../store/selectors";
 import Button from "../commons/Button";
 
 const Header = () => {
-  /*(1)*/ const isLogged = useSelector(getIsLogged);
-
+  const isLogged = useSelector(getIsLogged);
   const dispatch = useDispatch();
-  // (2)change by useDispatch --onLogout  const { handleLogout: onLogout } = useAuth();
 
-  const handleLogout = () => {
-    dispatch(authLogout());
-    // (2)change by useDispatch => //onLogout();
-  };
+  const handleLogout = () => dispatch(authLogout());
+
   return (
     <header>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">

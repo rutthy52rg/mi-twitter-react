@@ -1,10 +1,10 @@
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 
-export default function Root({ store, children }) {
+export default function Root({ store, router }) {
   return (
     <Provider store={store}>
-      <BrowserRouter>{children}</BrowserRouter>
+      <RouterProvider router={router} />
     </Provider>
   );
 }

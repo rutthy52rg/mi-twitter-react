@@ -29,12 +29,14 @@ export const authLoginFailure = (error) => ({
 });
 //gracias al middleware y thunk
 export const authLogin = (credentials) => {
-  return async function (dispatch, getState, { api }) {
+  return async function (dispatch, getState, { api, router }) {
     try {
       dispatch(authLoginRequest());
       // await login(credentials);
       await api.auth.login(credentials);
       dispatch(authLoginSuccess());
+      const to = router.state.location.state?.from?.pathname || "/";
+      router.navigate(to, { replace: true });
     } catch (error) {
       dispatch(authLoginFailure(error));
       throw error;
@@ -46,9 +48,10 @@ export const authLogoutSuccess = () => ({
 });
 
 export const authLogout = () => {
-  return async function (dispatch, getState, { api }) {
-    await api.auth.authLogout;
+  return async function (dispatch, getState, { api, router }) {
+    await api.auth.logout();
     dispatch(authLogoutSuccess());
+    router.navigate(`/tweets`);
   };
 };
 export const tweetsLoadedRequest = () => ({
@@ -68,16 +71,13 @@ export const tweetsLoadedFailure = (error) => ({
 export const tweetsLoad = () => {
   return async function (dispatch, getState, { api }) {
     const areLoaded = areTweetsLoaded(getState());
-    //si tweetsinPage es true es que ya estan cargados no vuelve a cargarlos con back to page
     if (areLoaded) return;
     try {
       dispatch(tweetsLoadedRequest());
-      // await login(credentials);
       const tweets = await api.tweets.getLatestTweets();
       dispatch(tweetsLoadedSuccess(tweets));
     } catch (error) {
       dispatch(tweetsLoadedFailure(error));
-      throw error;
     }
   };
 };
@@ -97,18 +97,20 @@ export const tweetLoadedFailure = (error) => ({
 
 // thuk
 export const tweetLoad = (tweetId) => {
-  return async function (dispatch, getState, { api }) {
+  return async function (dispatch, getState, { api, router }) {
     const isLoaded = getTweetDetail(tweetId)(getState());
-    //si tweetsinPage es true es que ya estan cargados no vuelve a cargarlos con back to page
+
     if (isLoaded) return;
     try {
       dispatch(tweetLoadedRequest());
-      // await login(credentials);
       const tweet = await api.tweets.getTweet(tweetId);
       dispatch(tweetLoadedSuccess(tweet));
     } catch (error) {
       dispatch(tweetLoadedFailure(error));
-      throw error;
+      if (error.status === 404) {
+        const to = "/404";
+        router.navigate(to);
+      }
     }
   };
 };
@@ -127,17 +129,20 @@ export const tweetCreatedFailure = (error) => ({
 });
 // thuk
 export const tweetCreated = (tweet) => {
-  return async function (dispatch, getState, { api }) {
+  return async function (dispatch, getState, { api, router }) {
     try {
       dispatch(tweetCreatedRequest());
       // const createTweet = await api.tweets.createTweet(tweet);
       const { id } = await api.tweets.createTweet(tweet);
       const createdTweet = await api.tweets.getTweet(id);
       dispatch(tweetCreatedSuccess(createdTweet));
+      router.navigate(`/tweets/${id}`);
       return createdTweet;
     } catch (error) {
       dispatch(tweetCreatedFailure(error));
-      throw error;
+      if (error.status === 401) {
+        router.navigate("/login");
+      }
     }
   };
 };

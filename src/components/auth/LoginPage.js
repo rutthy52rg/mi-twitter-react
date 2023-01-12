@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
 import { authLogin, uiResetError } from "../../store/actions";
 import { getUi } from "../../store/selectors";
 import Button from "../commons/Button";
@@ -9,13 +8,10 @@ import FormField from "../commons/FormField";
 const LoginPage = ({ ...props }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // (4) const [error, setError] = useState(null);
-  // (2) const [isFetching, setIsFetching] = useState(false);
-  const { /*(2)*/ isLoadding, /*(4)*/ error } = useSelector(getUi);
+
+  const { isLoadding, error } = useSelector(getUi);
 
   const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const handleChangeUsername = (e) => {
     e.preventDefault();
@@ -34,12 +30,7 @@ const LoginPage = ({ ...props }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    dispatch(
-      authLogin({ username, password })).then(() => {
-        const to = location.state?.from?.pathname || "/";
-        navigate(to, { replace: true });
-      }
-    );
+    dispatch(authLogin({ username, password }));
   };
 
   const isDisabled = useMemo(() => {
