@@ -16,15 +16,6 @@ const reducer = combineReducers(reducers);
 //   return next(action);
 // };
 
-export default function configureStore(preloadedState) {
-  const store = createStore(
-    reducer,
-    preloadedState,
-    //entre la acción y reducers => thunk
-    composeWithDevTools(applyMiddleware(...middlewares))
-  );
-  return store;
-}
 const logger = (store) => (next) => (action) => {
   console.group(action.type);
   console.info("dispatching", action, store.getState());
@@ -38,3 +29,13 @@ const middlewares = [
   thunk.withExtraArgument({ api: { auth, tweets } }),
   logger,
 ];
+
+export default function configureStore(preloadedState) {
+  const store = createStore(
+    reducer,
+    preloadedState,
+    //entre la acción y reducers => thunk
+    composeWithDevTools(applyMiddleware(...middlewares))
+  );
+  return store;
+}
