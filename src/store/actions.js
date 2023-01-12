@@ -1,4 +1,4 @@
-import { areTweetsLoaded } from "./selectors";
+import { areTweetsLoaded, getTweetDetail } from "./selectors";
 import {
   AUTH_LOGIN_FAILURE,
   AUTH_LOGIN_REQUEST,
@@ -7,6 +7,9 @@ import {
   TWEETS_LOADED_FAILURE,
   TWEETS_LOADED_REQUEST,
   TWEETS_LOADED_SUCCESS,
+  TWEET_LOADED_FAILURE,
+  TWEET_LOADED_REQUEST,
+  TWEET_LOADED_SUCCESS,
   UI_RESET_ERROR,
 } from "./types";
 
@@ -69,6 +72,35 @@ export const tweetsLoad = () => {
   };
 };
 
+export const tweetLoadedRequest = () => ({
+  type: TWEET_LOADED_REQUEST,
+});
+export const tweetLoadedSuccess = (tweet) => ({
+  type: TWEET_LOADED_SUCCESS,
+  payload: tweet,
+});
+export const tweetLoadedFailure = (error) => ({
+  type: TWEET_LOADED_FAILURE,
+  payload: error,
+  error: true,
+});
+
+export const tweetLoad = (tweetId) => {
+  return async function (dispatch, getState, { api }) {
+    const isLoaded = getTweetDetail(tweetId)(getState());
+    //si tweetsinPage es true es que ya estan cargados no vuelve a cargarlos con back to page
+    if (isLoaded) return;
+    try {
+      dispatch(tweetLoadedRequest());
+      // await login(credentials);
+      const tweet = await api.tweets.getTweet(tweetId);
+      dispatch(tweetLoadedSuccess(tweet));
+    } catch (error) {
+      dispatch(tweetLoadedFailure(error));
+      throw error;
+    }
+  };
+};
 // export const tweetsLoaded = (tweets) => ({
 //   type: TWEETS_LOADED,
 //   payload: tweets,

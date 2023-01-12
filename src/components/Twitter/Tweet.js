@@ -1,6 +1,6 @@
 import classNames from "classnames";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import Photo from "../commons/Photo";
-import formatDistanceToNow from "date-fns/formatDistanceToNow"
 
 const Tweet = ({ className, content, user, updatedAt, like }) => {
   return (
@@ -23,7 +23,7 @@ const Tweet = ({ className, content, user, updatedAt, like }) => {
               </time>
             </p>
             <p className="card-text"> {content}</p>
-            <p className="card-text"> {like}</p>
+            <p className="card-text"> {like.length}</p>
           </div>
         </div>
       </div>

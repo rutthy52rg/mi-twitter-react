@@ -7,11 +7,11 @@ export const getLatestTweets = () => {
 };
 
 export const getTweet = (id) => {
-  const url = `${urlTweets}/${id}`;
+  const url = `${urlTweets}/${id}?_expand=user&_embed=like`;
   return client.get(url);
 };
 
-export const createTweet = (tweet)=> {
-   const url = urlTweets;
-   return client.post(url, tweet);
-}
+export const createTweet = (tweet) => {
+  const url = urlTweets;
+  return client.post(url, tweet);
+};

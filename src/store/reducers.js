@@ -11,6 +11,7 @@ import {
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGOUT,
   TWEETS_LOADED_SUCCESS,
+  TWEET_LOADED_SUCCESS,
   UI_RESET_ERROR,
 } from "./types";
 
@@ -40,6 +41,9 @@ export function auth(state = stateDefault.auth, action) {
 export function tweets(state = stateDefault.tweets, action) {
   if (action.type === TWEETS_LOADED_SUCCESS) {
     return { areLoaded: true, data: action.payload };
+  }
+  if (action.type === TWEET_LOADED_SUCCESS) {
+    return { ...state, data: [action.payload] };
   }
   return state;
 }
