@@ -16,7 +16,10 @@ import {
 
 const stateDefault = {
   auth: false,
-  tweets: [],
+  tweets: {
+    areLoaded: false,
+    data: [],
+  },
   ui: {
     isLoadding: false,
     error: null,
@@ -35,12 +38,10 @@ export function auth(state = stateDefault.auth, action) {
 }
 
 export function tweets(state = stateDefault.tweets, action) {
-  switch (action.type) {
-    case TWEETS_LOADED_SUCCESS:
-      return action.payload;
-    default:
-      return state;
+  if (action.type === TWEETS_LOADED_SUCCESS) {
+    return { areLoaded: true, data: action.payload };
   }
+  return state;
 }
 
 export function ui(state = stateDefault.ui, action) {

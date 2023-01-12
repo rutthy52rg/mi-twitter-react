@@ -1,3 +1,4 @@
+import { areTweetsLoaded } from "./selectors";
 import {
   AUTH_LOGIN_FAILURE,
   AUTH_LOGIN_REQUEST,
@@ -53,6 +54,9 @@ export const tweetsLoadedFailure = (error) => ({
 
 export const tweetsLoad = () => {
   return async function (dispatch, getState, { api }) {
+    const areLoaded = areTweetsLoaded(getState());
+    //si tweetsinPage es true es que ya estan cargados no vuelve a cargarlos con back to page
+    if (areLoaded) return;
     try {
       dispatch(tweetsLoadedRequest());
       // await login(credentials);

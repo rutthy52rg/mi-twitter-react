@@ -1,15 +1,12 @@
 export const getIsLogged = (state) => state.auth;
 
-export const getTweets = (state) => state.tweets;
+export const getTweets = (state) => state.tweets.data;
 
-// export const getTweetDetail = (state, id) =>
-//   getTweets(state).find((tweet) => tweet.id.toString());
+export const areTweetsLoaded = (state) => state.tweets.areLoaded;
 
-// export function getTweetDetail(id) {
-//   return function (state) {
-//     return getTweets(state).find((tweet) => tweet.id.toString());
-//   };
-// }
+
+
+ 
 
 export const getTweetDetail = (id) => (state) =>
   getTweets(state).find((tweet) => tweet.id.toString());
