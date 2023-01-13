@@ -107,10 +107,6 @@ export const tweetLoad = (tweetId) => {
       dispatch(tweetLoadedSuccess(tweet));
     } catch (error) {
       dispatch(tweetLoadedFailure(error));
-      if (error.status === 404) {
-        const to = "/404";
-        router.navigate(to);
-      }
     }
   };
 };
@@ -140,9 +136,6 @@ export const tweetCreated = (tweet) => {
       return createdTweet;
     } catch (error) {
       dispatch(tweetCreatedFailure(error));
-      if (error.status === 401) {
-        router.navigate("/login");
-      }
     }
   };
 };

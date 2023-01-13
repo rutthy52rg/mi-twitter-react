@@ -23,7 +23,7 @@ const store = configureStore({ auth: !!accessToken }, { router });
 console.log(store);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Root store={store} router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Root store={store} router={router} />
+  // </React.StrictMode>
 );

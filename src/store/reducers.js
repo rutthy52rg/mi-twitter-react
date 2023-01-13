@@ -15,6 +15,7 @@ import {
   UI_RESET_ERROR,
 } from "./types";
 
+//rootstate
 const stateDefault = {
   auth: false,
   tweets: {
