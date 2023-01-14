@@ -1,6 +1,6 @@
 //sincrono
-import { tweetsLoadedSuccess } from "./actions";
-import { TWEETS_LOADED_SUCCESS } from "./types";
+import { tweetsLoadedSuccess } from "../actions";
+import { TWEETS_LOADED_SUCCESS } from "../types";
 
 describe("tweesLoadedSuccess", () => {
   test('should return a "TWEETS_LOADED_SUCCESS" action', () => {

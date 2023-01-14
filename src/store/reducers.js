@@ -16,7 +16,7 @@ import {
 } from "./types";
 
 //rootstate
-const stateDefault = {
+export const stateDefault = {
   auth: false,
   tweets: {
     areLoaded: false,
